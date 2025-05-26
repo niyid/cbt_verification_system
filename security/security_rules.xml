@@ -1,0 +1,15 @@
+<odoo>
+    <record id="test_complaint_user_rule" model="ir.rule">
+        <field name="name">Test Complaint User Rule</field>
+        <field name="model_id" ref="model_test_complaint"/>
+        <field name="domain_force">['|', ('create_uid', '=', user.id), ('state', 'in', ['submitted', 'in_review', 'resolved', 'rejected'])]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="test_script_user_rule" model="ir.rule">
+        <field name="name">Test Script User Rule</field>
+        <field name="model_id" ref="model_test_script"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+<odoo>
+    <record id="view_test_script_form_enhanced" model="ir.ui.view">
+        <field name="name">test.script.form.enhanced</field>
+        <field name="model">test.script</field>
+        <field name="inherit_id" ref="test_verification_system.view_test_script_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='test_name']" position="after">
+                <field name="subject_type"/>
+                <field name="answer_key" filename="answer_key_filename"/>
+            </xpath>
+            
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="alert">
+                    <strong>Grading Instructions:</strong> Upload both student script and answer key before grading.
+                </div>
+            </xpath>
+            
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Grading Details">
+                        <group>
+                            <field name="detected_answers"/>
+                            <field name="ai_score"/>
+                        </group>
+                    </page>
+                    <page string="Processing Log">
+                        <field name="processing_log" widget="textarea" readonly="1"/>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

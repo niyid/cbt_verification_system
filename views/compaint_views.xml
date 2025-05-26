@@ -1,0 +1,65 @@
+<odoo>
+    <record id="view_test_complaint_tree" model="ir.ui.view">
+        <field name="name">test.complaint.tree</field>
+        <field name="model">test.complaint</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="test_name"/>
+                <field name="exam_number"/>
+                <field name="applicant_name"/>
+                <field name="state"/>
+                <field name="original_score"/>
+                <field name="verified_score"/>
+                <field name="difference"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_test_complaint_form" model="ir.ui.view">
+        <field name="name">test.complaint.form</field>
+        <field name="model">test.complaint</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight" states="draft"/>
+                    <button name="action_review" string="Mark as Review" type="object" states="submitted"/>
+                    <button name="action_resolve" string="Resolve" type="object" states="in_review" class="oe_highlight"/>
+                    <button name="action_reject" string="Reject" type="object" states="in_review"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="test_name"/>
+                        <field name="exam_number"/>
+                        <field name="applicant_name"/>
+                        <field name="applicant_email"/>
+                    </group>
+                    <group>
+                        <field name="complaint_details"/>
+                    </group>
+                    <notebook>
+                        <page string="Scores">
+                            <group>
+                                <field name="original_score"/>
+                                <field name="verified_score"/>
+                                <field name="difference"/>
+                                <field name="test_script_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_test_complaint" model="ir.actions.act_window">
+        <field name="name">Test Complaints</field>
+        <field name="res_model">test.complaint</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_test_complaint_root" name="Test Verification"/>
+    <menuitem id="menu_test_complaint" name="Complaints" parent="menu_test_complaint_root" action="action_test_complaint"/>
+</odoo>

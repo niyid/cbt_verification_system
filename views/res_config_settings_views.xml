@@ -1,0 +1,41 @@
+<odoo>
+    <record id="res_config_settings_view_form_inherit_test_verification" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.test.verification</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <h2>DeepSeek API Configuration</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="deepseek_api_key" password="True"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="deepseek_api_key"/>
+                            <div class="text-muted">API key for DeepSeek marking service</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="deepseek_api_url"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="deepseek_api_url"/>
+                            <div class="text-muted">Endpoint for DeepSeek API</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="deepseek_timeout"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="deepseek_timeout"/>
+                            <div class="text-muted">Timeout in seconds for API calls</div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

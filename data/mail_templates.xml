@@ -1,0 +1,33 @@
+<odoo>
+    <record id="email_template_complaint_status" model="mail.template">
+        <field name="name">Test Complaint Status Update</field>
+        <field name="model_id" ref="model_test_complaint"/>
+        <field name="email_from">${object.create_uid.email|safe}</field>
+        <field name="email_to">${object.applicant_email|safe}</field>
+        <field name="subject">Test Complaint Status Update - ${object.name}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>Dear ${object.applicant_name or 'Applicant'},</p>
+                <p>The status of your test complaint has been updated:</p>
+                <ul>
+                    <li>Complaint Reference: <strong>${object.name}</strong></li>
+                    <li>Test Name: <strong>${object.test_name}</strong></li>
+                    <li>Exam Number: <strong>${object.exam_number}</strong></li>
+                    <li>New Status: <strong>${object.state.upper()}</strong></li>
+                </ul>
+                
+                % if object.state == 'in_review':
+                <p>Your complaint is now under review. We will process your test script shortly.</p>
+                % elif object.state == 'resolved':
+                <p>Your complaint has been resolved. The verified score is ${object.verified_score}.</p>
+                % elif object.state == 'rejected':
+                <p>Your complaint has been reviewed and rejected.</p>
+                % endif
+                
+                <p>You can view your complaint at any time through our portal.</p>
+                <p>Thank you,</p>
+                <p>The Examination Team</p>
+            ]]>
+        </field>
+    </record>
+</odoo>

@@ -80,7 +80,7 @@ class VerificationResult(models.Model):
     notes = fields.Text(string='Verification Notes')
     feedback_ids = fields.One2many(
         'test.script.feedback',
-        'verification_id',
+        'script_id',
         string='Detailed Feedback'
     )
     attachment_ids = fields.Many2many(

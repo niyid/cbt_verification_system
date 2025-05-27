@@ -3,10 +3,10 @@
         <field name="name">test.script.feedback.tree</field>
         <field name="model">test.script.feedback</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="date_received"/>
                 <field name="total_score"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -38,7 +38,7 @@
     <record id="view_test_script_form_add_feedback" model="ir.ui.view">
         <field name="name">test.script.form.add.feedback</field>
         <field name="model">test.script</field>
-        <field name="inherit_id" ref="test_verification_system.view_test_script_form"/>
+        <field name="inherit_id" ref="cbt_verification_system.view_test_script_form"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
                 <notebook>
@@ -51,10 +51,10 @@
                     </page>
                     <page string="Detailed Feedback">
                         <field name="feedback_ids" readonly="1">
-                            <tree>
+                            <list>
                                 <field name="date_received"/>
                                 <field name="total_score"/>
-                            </tree>
+                            </list>
                         </field>
                     </page>
                 </notebook>

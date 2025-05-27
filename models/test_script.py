@@ -1,4 +1,6 @@
 import io
+import re
+import base64
 import fitz
 import cv2
 import numpy as np
@@ -10,9 +12,55 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+try:
+    import fitz  # PyMuPDF
+    import cv2
+    import numpy as np
+    from PIL import Image
+    import pytesseract
+    DEPENDENCIES_INSTALLED = True
+except ImportError as e:
+    _logger.warning(f"Import error: {str(e)}")
+    DEPENDENCIES_INSTALLED = False
+
 class TestScript(models.Model):
-    _inherit = 'test.script'
+    _name = 'test.script'
+    _description = 'Test Script'
     
+    # Fields from views that need to be added
+    name = fields.Char(string='Reference', default=lambda self: _('New'), readonly=True)
+    test_name = fields.Char(string='Test Name', required=True)
+    exam_number = fields.Char(string='Exam Number', required=True)
+    script_file = fields.Binary(string='Student Script', required=True)
+    file_name = fields.Char(string='File Name')
+    file_type = fields.Selection([
+        ('pdf', 'PDF'),
+        ('jpeg', 'JPEG'),
+        ('png', 'PNG'),
+    ], string='File Type')
+    original_score = fields.Float(string='Original Score')
+    ai_score = fields.Float(string='AI Score')
+    scoring_complete = fields.Boolean(string='Grading Complete')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('processing', 'Processing'),
+        ('graded', 'Graded'),
+        ('error', 'Error'),
+    ], string='Status', default='draft')
+
+   # DeepSeek specific fields
+    deepseek_status = fields.Selection([
+        ('not_called', 'Not Called'),
+        ('processing', 'Processing'),
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+    ], string='API Status', default='not_called', readonly=True)
+    
+    deepseek_last_call = fields.Datetime(string='Last API Call', readonly=True)
+    deepseek_request = fields.Text(string='API Request', readonly=True)
+    deepseek_response = fields.Text(string='API Response', readonly=True)
+    
+    # Existing fields
     subject_type = fields.Selection([
         ('math', 'Mathematics'),
         ('english', 'English'),
@@ -22,11 +70,126 @@ class TestScript(models.Model):
         ('general', 'General Knowledge'),
     ], string='Subject Type', required=True)
     
-    answer_key = fields.Binary('Answer Key File')
-    answer_key_filename = fields.Char('Answer Key Filename')
-    detected_answers = fields.Text('Detected Answers', readonly=True)
-    processing_log = fields.Text('Processing Log', readonly=True)
-    
+    answer_key = fields.Binary(string='Answer Key File')
+    answer_key_filename = fields.Char(string='Answer Key Filename')
+    detected_answers = fields.Text(string='Detected Answers', readonly=True)
+    processing_log = fields.Text(string='Processing Log', readonly=True)
+    feedback_ids = fields.One2many('test.script.feedback', 'script_id', string='Feedback')
+
+    def _call_deepseek_api(self, file_data, file_type):
+        """Call DeepSeek API for script analysis"""
+        self.ensure_one()
+        
+        try:
+            self.write({
+                'deepseek_status': 'processing',
+                'deepseek_last_call': fields.Datetime.now(),
+            })
+            
+            # Prepare API request
+            api_url = "https://api.deepseek.com/v1/analyze"  # Replace with actual endpoint
+            headers = {
+                "Authorization": f"Bearer {self._get_deepseek_api_key()}",
+                "Content-Type": "application/json"
+            }
+            
+            payload = {
+                "file_content": base64.b64encode(file_data).decode('utf-8'),
+                "file_type": file_type,
+                "test_name": self.test_name,
+                "exam_number": self.exam_number,
+                "subject_type": self.subject_type,
+            }
+            
+            # Store request
+            self.deepseek_request = json.dumps(payload, indent=2)
+            
+            # Make API call
+            response = requests.post(
+                api_url,
+                headers=headers,
+                json=payload,
+                timeout=30
+            )
+            response.raise_for_status()
+            response_json = response.json()
+            
+            # Store response
+            self.write({
+                'deepseek_response': json.dumps(response_json, indent=2),
+                'deepseek_status': 'success',
+            })
+            
+            return response_json
+            
+        except Exception as e:
+            error_msg = f"DeepSeek API Error: {str(e)}"
+            if hasattr(e, 'response') and e.response:
+                error_msg += f"\nResponse: {e.response.text}"
+            
+            self.write({
+                'deepseek_response': error_msg,
+                'deepseek_status': 'failed',
+            })
+            _logger.error(error_msg)
+            raise UserError(_("DeepSeek API Error: %s") % str(e))
+
+    def _get_deepseek_api_key(self):
+        """Retrieve API key from system parameters"""
+        api_key = self.env['ir.config_parameter'].sudo().get_param('deepseek.api_key')
+        if not api_key:
+            raise UserError(_("DeepSeek API key is not configured"))
+        return api_key
+
+    def action_grade_script(self):
+        """Complete grading workflow with DeepSeek integration"""
+        for script in self:
+            try:
+                script._log_processing("Starting grading process")
+                script.write({'state': 'processing'})
+                
+                # 1. Process uploaded script
+                file_data = base64.b64decode(script.script_file)
+                
+                # 2. Call DeepSeek API
+                api_result = script._call_deepseek_api(file_data, script.file_type)
+                
+                # 3. Process answer key
+                answer_key = script._parse_answer_key()
+                
+                # 4. Grade according to subject
+                results = script._match_answers(
+                    api_result.get('extracted_text', ''),
+                    api_result.get('contours', []),
+                    answer_key
+                )
+                
+                # 5. Save results
+                script.write({
+                    'ai_score': results['score'],
+                    'detected_answers': results['details'],
+                    'scoring_complete': True,
+                    'state': 'graded',
+                })
+                
+                # 6. Create feedback record
+                if results.get('feedback'):
+                    self.env['test.script.feedback'].create({
+                        'script_id': script.id,
+                        'total_score': results['score'],
+                        'comments': results['feedback'],
+                    })
+                
+                script._log_processing(f"Grading completed. Score: {results['score']}")
+                
+            except Exception as e:
+                script.write({
+                    'state': 'error',
+                    'processing_log': f"{script.processing_log or ''}\nError: {str(e)}"
+                })
+                _logger.error(f"Grading failed for {script.name}: {str(e)}")
+                raise UserError(_("Grading failed. See processing log for details."))    
+
     def _log_processing(self, message):
         """Add timestamped log entries"""
         timestamp = fields.Datetime.now()

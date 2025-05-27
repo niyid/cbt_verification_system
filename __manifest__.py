@@ -24,12 +24,12 @@
         'bin': ['tesseract-ocr']
     },
     'data': [
+        'views/menu_views.xml',
         'views/complaint_views.xml',
         'views/test_script_views.xml',
         'views/feedback_views.xml',
         'views/res_config_settings_views.xml',
         'views/portal_templates.xml',
-        'views/menu_views.xml',
         'wizard/remark_wizard.xml',
         'security/security_rules.xml',
         'data/mail_templates.xml',

@@ -1,12 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Base Tree View -->
+    <record id="view_test_script_tree" model="ir.ui.view">
+        <field name="name">test.script.tree</field>
+        <field name="model">test.script</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="Reference"/>
+                <field name="test_name" string="Test"/>
+                <field name="exam_number" string="Exam #"/>
+                <field name="subject_type" string="Subject"/>
+                <field name="original_score" string="Original Score"/>
+                <field name="ai_score" string="AI Score"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Base Form View -->
+    <record id="view_test_script_form" model="ir.ui.view">
+        <field name="name">test.script.form</field>
+        <field name="model">test.script</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_grade_script" string="Grade Script" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="test_name"/>
+                        <field name="exam_number"/>
+                    </group>
+                    <group>
+                        <field name="script_file" filename="file_name" string="Student Script"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="file_type"/>
+                    </group>
+                    <group>
+                        <field name="original_score"/>
+                        <field name="ai_score"/>
+                        <field name="scoring_complete"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Enhanced Form View -->
     <record id="view_test_script_form_enhanced" model="ir.ui.view">
         <field name="name">test.script.form.enhanced</field>
         <field name="model">test.script</field>
-        <field name="inherit_id" ref="test_verification_system.view_test_script_form"/>
+        <field name="inherit_id" ref="cbt_verification_system.view_test_script_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='test_name']" position="after">
                 <field name="subject_type"/>
-                <field name="answer_key" filename="answer_key_filename"/>
+                <field name="answer_key" filename="answer_key_filename" string="Answer Key"/>
             </xpath>
             
             <xpath expr="//sheet" position="before">
@@ -26,8 +76,38 @@
                     <page string="Processing Log">
                         <field name="processing_log" widget="textarea" readonly="1"/>
                     </page>
+                    <page string="Feedback">
+                        <field name="feedback_ids">
+                            <list>
+                                <field name="date_received"/>
+                                <field name="total_score"/>
+                                <field name="comments"/>
+                            </list>
+                        </field>
+                    </page>
                 </notebook>
             </xpath>
         </field>
     </record>
+
+    <!-- Window Action -->
+    <record id="action_test_script" model="ir.actions.act_window">
+        <field name="name">Test Scripts</field>
+        <field name="res_model">test.script</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_test_script_form_enhanced"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Upload test scripts for automated grading
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem 
+        id="menu_test_script" 
+        name="Test Scripts" 
+        parent="menu_cbt_verification_root"
+        action="action_test_script"
+        sequence="20"/>
 </odoo>

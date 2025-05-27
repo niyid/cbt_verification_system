@@ -12,7 +12,7 @@
         id="menu_test_complaint_root" 
         name="Complaints" 
         parent="menu_cbt_verification_root"
-        sequence="10"/>
+        sequence="20"/>
     
     <!-- Verification Results -->
     <menuitem 

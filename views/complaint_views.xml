@@ -3,7 +3,7 @@
         <field name="name">test.complaint.tree</field>
         <field name="model">test.complaint</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="test_name"/>
                 <field name="exam_number"/>
@@ -12,7 +12,7 @@
                 <field name="original_score"/>
                 <field name="verified_score"/>
                 <field name="difference"/>
-            </tree>
+            </list>
         </field>
     </record>
 

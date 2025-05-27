@@ -1,5 +1,5 @@
 import io
-import fitz  # PyMuPDF
+import fitz
 import cv2
 import numpy as np
 from PIL import Image

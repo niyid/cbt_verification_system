@@ -12,4 +12,13 @@
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
     </record>
+
+  <record id="verification_result_user_rule" model="ir.rule">
+      <field name="name">Verification Result User Rule</field>
+      <field name="model_id" ref="model_verification_result"/>
+      <field name="domain_force">
+          ['|', ('verified_by', '=', user.id), ('status', 'in', ['verified', 'final'])]
+      </field>
+      <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+  </record>    
 </odoo>

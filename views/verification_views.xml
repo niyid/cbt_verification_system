@@ -1,0 +1,92 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_verification_result_tree" model="ir.ui.view">
+        <field name="name">verification.result.tree</field>
+        <field name="model">verification.result</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="test_name"/>
+                <field name="exam_number"/>
+                <field name="original_score"/>
+                <field name="verified_score"/>
+                <field name="score_difference"/>
+                <field name="status"/>
+                <field name="verification_method"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_verification_result_form" model="ir.ui.view">
+        <field name="name">verification.result.form</field>
+        <field name="model">verification.result</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_verified" string="Mark Verified" type="object" class="oe_highlight" states="pending"/>
+                    <button name="action_mark_disputed" string="Mark Disputed" type="object" states="pending"/>
+                    <button name="action_mark_final" string="Mark Final" type="object" states="verified" class="oe_highlight"/>
+                    <field name="status" widget="statusbar" clickable="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="complaint_id" readonly="1"/>
+                            <field name="test_script_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="exam_number" readonly="1"/>
+                            <field name="test_name" readonly="1"/>
+                            <field name="verification_method"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="original_score" readonly="1"/>
+                            <field name="verified_score"/>
+                            <field name="score_difference" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="verification_date" readonly="1"/>
+                            <field name="verified_by" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Feedback">
+                            <field name="feedback_ids">
+                                <tree>
+                                    <field name="date_received"/>
+                                    <field name="total_score"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Documents">
+                            <field name="attachment_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="datas" filename="name" string="Download"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action/Menu Items -->
+    <record id="action_verification_result" model="ir.actions.act_window">
+        <field name="name">Verification Results</field>
+        <field name="res_model">verification.result</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_verification_result_root" name="Verifications" parent="menu_test_complaint_root"/>
+    <menuitem id="menu_verification_result" name="Results" parent="menu_verification_result_root" action="action_verification_result"/>
+</odoo>

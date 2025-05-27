@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu Structure -->
+    <menuitem 
+        id="menu_cbt_verification_root" 
+        name="CBT Verification" 
+        sequence="10"
+        web_icon="cbt_verification_system,static/description/icon.png"/>
+    
+    <!-- Complaint Management -->
+    <menuitem 
+        id="menu_test_complaint_root" 
+        name="Complaints" 
+        parent="menu_cbt_verification_root"
+        sequence="10"/>
+    
+    <menuitem 
+        id="menu_test_complaint" 
+        name="All Complaints" 
+        parent="menu_test_complaint_root"
+        action="action_test_complaint"
+        sequence="10"/>
+    
+    <menuitem 
+        id="menu_test_complaint_new" 
+        name="New Complaint" 
+        parent="menu_test_complaint_root"
+        action="action_test_complaint_new"
+        sequence="20"/>
+    
+    <!-- Test Scripts -->
+    <menuitem 
+        id="menu_test_script" 
+        name="Test Scripts" 
+        parent="menu_cbt_verification_root"
+        action="action_test_script"
+        sequence="20"/>
+    
+    <!-- Verification Results -->
+    <menuitem 
+        id="menu_verification_result_root" 
+        name="Verifications" 
+        parent="menu_cbt_verification_root"
+        sequence="30"/>
+    
+    <menuitem 
+        id="menu_verification_result" 
+        name="Results" 
+        parent="menu_verification_result_root"
+        action="action_verification_result"
+        sequence="10"/>
+    
+    <menuitem 
+        id="menu_verification_report" 
+        name="Reports" 
+        parent="menu_verification_result_root"
+        action="action_verification_report"
+        sequence="20"/>
+    
+    <!-- Configuration -->
+    <menuitem 
+        id="menu_cbt_configuration" 
+        name="Configuration" 
+        parent="menu_cbt_verification_root"
+        sequence="100"/>
+    
+    <menuitem 
+        id="menu_cbt_grading_rubric" 
+        name="Grading Rubrics" 
+        parent="menu_cbt_configuration"
+        action="action_grading_rubric"
+        sequence="10"/>
+    
+    <menuitem 
+        id="menu_cbt_deepseek_config" 
+        name="AI Configuration" 
+        parent="menu_cbt_configuration"
+        action="action_res_config_settings"
+        sequence="20"/>
+    
+    <!-- Portal Menu (for complainants) -->
+    <menuitem 
+        id="menu_portal_complaints" 
+        name="My Complaints" 
+        parent="website.menu_portal"
+        action="action_portal_complaints"
+        sequence="30"/>
+</odoo>

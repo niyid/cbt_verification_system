@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== -->
+    <!-- BASE SECURITY GROUPS -->
+    <!-- ==================== -->
+    <record id="group_cbt_user" model="res.groups">
+        <field name="name">CBT User</field>
+        <field name="category_id" ref="base.module_category_services"/>
+    </record>
+
+    <!-- ================== -->
+    <!-- COMPLAINTS GROUPS -->
+    <!-- ================== -->
+    <record id="group_cbt_complaints_user" model="res.groups">
+        <field name="name">Complaints: User</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_user'))]"/>
+    </record>
+
+    <record id="group_cbt_complaints_manager" model="res.groups">
+        <field name="name">Complaints: Manager</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_complaints_user'))]"/>
+    </record>
+
+    <!-- ===================== -->
+    <!-- VERIFICATION GROUPS -->
+    <!-- ===================== -->
+    <record id="group_cbt_verification_user" model="res.groups">
+        <field name="name">Verification: User</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_user'))]"/>
+    </record>
+
+    <record id="group_cbt_verification_manager" model="res.groups">
+        <field name="name">Verification: Manager</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_verification_user'))]"/>
+    </record>
+
+    <!-- ================== -->
+    <!-- TEST SCRIPTS GROUPS -->
+    <!-- ================== -->
+    <record id="group_cbt_scripts_user" model="res.groups">
+        <field name="name">Test Scripts: User</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_user'))]"/>
+    </record>
+
+    <record id="group_cbt_scripts_manager" model="res.groups">
+        <field name="name">Test Scripts: Manager</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_scripts_user'))]"/>
+    </record>
+
+    <!-- ================== -->
+    <!-- CONFIGURATION -->
+    <!-- ================== -->
+    <record id="group_cbt_configuration" model="res.groups">
+        <field name="name">CBT Configuration</field>
+        <field name="category_id" ref="base.module_category_services"/>
+        <field name="implied_ids" eval="[(4, ref('group_cbt_user'))]"/>
+    </record>
+</odoo>

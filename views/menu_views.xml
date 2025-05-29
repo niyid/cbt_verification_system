@@ -4,22 +4,37 @@
     <menuitem 
         id="menu_cbt_verification_root" 
         name="CBT Verification" 
-        sequence="10"
-        web_icon="cbt_verification_system,static/description/icon.png"/>
+        sequence="45"/>
+    
+    <!-- Test Scripts Menu -->
+    <menuitem 
+        id="menu_test_script" 
+        name="Test Scripts" 
+        parent="menu_cbt_verification_root"
+        action="action_test_script"
+        sequence="20"/>
     
     <!-- Complaint Management -->
     <menuitem 
         id="menu_test_complaint_root" 
-        name="Complaints" 
+        name="CBT Complaints" 
         parent="menu_cbt_verification_root"
-        sequence="20"/>
+        sequence="30"/>
+    
+    <!-- Actual Complaints Menu Item -->
+    <menuitem 
+        id="menu_test_complaint" 
+        name="Manage Complaints" 
+        parent="menu_test_complaint_root" 
+        action="action_test_complaint"
+        sequence="10"/>
     
     <!-- Verification Results -->
     <menuitem 
         id="menu_verification_result_root" 
         name="Verifications" 
         parent="menu_cbt_verification_root"
-        sequence="30"/>
+        sequence="40"/>
     
     <!-- Configuration -->
     <menuitem 
@@ -27,5 +42,4 @@
         name="Configuration" 
         parent="menu_cbt_verification_root"
         sequence="100"/>
-
 </odoo>

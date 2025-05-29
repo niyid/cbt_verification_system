@@ -64,7 +64,6 @@
         <field name="view_mode">tree,form</field>
     </record>
         
-    <menuitem id="menu_test_complaint_root" name="Test Verification"/>
     <menuitem id="menu_test_complaint" name="Complaints" parent="menu_test_complaint_root" action="action_test_complaint"/>
 </odoo>
 
